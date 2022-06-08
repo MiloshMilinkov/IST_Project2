@@ -21,7 +21,7 @@ namespace WebAPI.Controllers
         [HttpGet]
         public IActionResult showAllEnterprises()
         {
-            return Ok(enterprises);
+            return Ok(enterprises.OrderBy(enterprise=>enterprise.pib).ThenBy(enterprise => enterprise.corpName));
         }
 
         [HttpPost]
@@ -40,6 +40,7 @@ namespace WebAPI.Controllers
                 return Ok(enterprise);
             
         }
+
         [HttpGet("filter")]
         public IActionResult FilterByEnteprisename(string filterData)
         {
