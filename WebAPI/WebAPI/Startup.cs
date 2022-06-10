@@ -44,6 +44,7 @@ namespace WebAPI
             //}
             //podesavanje cors da svi mogu da pristupe
             app.UseCors(opt => opt.AllowAnyOrigin());
+            
             app.UseRouting();
 
             app.UseAuthorization();

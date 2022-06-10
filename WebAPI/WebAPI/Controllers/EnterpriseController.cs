@@ -14,17 +14,18 @@ namespace WebAPI.Controllers
     {
         static List<Enterprise> enterprises = new List<Enterprise>()
         {
-              new Enterprise { pib=10000000,nameOfPR="Boban",phoneNubmer="076069544",
+              new Enterprise { pib=10000000,nameOfPR="Boban",phoneNumber="076069544",
                                                  email="boban@gmail.com",corpName="Emmi",corpAddress="Centar Grada"}
         };
-       
-        [HttpGet]
+        static List<Invoice> invoices = new List<Invoice>();
+        
+        [HttpGet("GetAllEnterprises")]
         public IActionResult showAllEnterprises()
         {
             return Ok(enterprises.OrderBy(enterprise=>enterprise.pib).ThenBy(enterprise => enterprise.corpName));
         }
 
-        [HttpPost]
+        [HttpPost("AddEnterprise")]
         public IActionResult AddNewEnterprise([FromForm] string nameOfPR, [FromForm] string phoneNubmer,
                                          [FromForm] string email, [FromForm] string corpName,
                                          [FromForm] string corpAddress)
@@ -32,7 +33,7 @@ namespace WebAPI.Controllers
             Enterprise enterprise = new Enterprise();
                 enterprise.pib = enterprises.OrderByDescending(enterprise => enterprise.pib).First().pib + 1;
                 enterprise.nameOfPR = nameOfPR;
-                enterprise.phoneNubmer = phoneNubmer;
+                enterprise.phoneNumber = phoneNubmer;
                 enterprise.email = email;
                 enterprise.corpName = corpName;
                 enterprise.corpAddress = corpAddress;
@@ -41,7 +42,7 @@ namespace WebAPI.Controllers
             
         }
 
-        [HttpGet("filter")]
+        [HttpGet("filterEnterprises")]
         public IActionResult FilterByEnteprisename(string filterData)
         {
             var data = enterprises.Where(enterprise => enterprise.corpName.Contains(filterData) || 
@@ -51,82 +52,25 @@ namespace WebAPI.Controllers
                 .Select(enterprise => enterprise);
             return Ok(data);
         }
+
+        [HttpPost("AddNewInvoice")]
+        public IActionResult AddNewInvocie([FromForm] int pibRecieved, [FromForm] int pibDestination,
+                                        [FromForm] string dateOfCreation, [FromForm] string paymentDeadline,
+                                        [FromForm] string invoiceType, [FromForm] double paymentAmount)
+        {
+            Invoice invoice = new Invoice();
+            invoice.pibRecieved = pibRecieved;
+            invoice.pibDestination = pibDestination;
+            invoice.dateOfCreation = dateOfCreation;
+            invoice.paymentDeadline = paymentDeadline;
+            invoice.invoiceType = invoiceType;
+            invoice.paymentAmount = paymentAmount;
+            invoices.Add(invoice);
+            return Ok(invoice);
+
+        }
     }
     
    
-        // GET: EnterpriseController
-    //    public ActionResult Index()
-    //    {
-    //        return View();
-    //    }
-
-    //    // GET: EnterpriseController/Details/5
-    //    public ActionResult Details(int id)
-    //    {
-    //        return View();
-    //    }
-
-    //    // GET: EnterpriseController/Create
-    //    public ActionResult Create()
-    //    {
-    //        return View();
-    //    }
-
-    //    // POST: EnterpriseController/Create
-    //    [HttpPost]
-    //    [ValidateAntiForgeryToken]
-    //    public ActionResult Create(IFormCollection collection)
-    //    {
-    //        try
-    //        {
-    //            return RedirectToAction(nameof(Index));
-    //        }
-    //        catch
-    //        {
-    //            return View();
-    //        }
-    //    }
-
-    //    // GET: EnterpriseController/Edit/5
-    //    public ActionResult Edit(int id)
-    //    {
-    //        return View();
-    //    }
-
-    //    // POST: EnterpriseController/Edit/5
-    //    [HttpPost]
-    //    [ValidateAntiForgeryToken]
-    //    public ActionResult Edit(int id, IFormCollection collection)
-    //    {
-    //        try
-    //        {
-    //            return RedirectToAction(nameof(Index));
-    //        }
-    //        catch
-    //        {
-    //            return View();
-    //        }
-    //    }
-
-    //    // GET: EnterpriseController/Delete/5
-    //    public ActionResult Delete(int id)
-    //    {
-    //        return View();
-    //    }
-
-    //    // POST: EnterpriseController/Delete/5
-    //    [HttpPost]
-    //    [ValidateAntiForgeryToken]
-    //    public ActionResult Delete(int id, IFormCollection collection)
-    //    {
-    //        try
-    //        {
-    //            return RedirectToAction(nameof(Index));
-    //        }
-    //        catch
-    //        {
-    //            return View();
-    //        }
-    //    }
-    //}
+        
 }

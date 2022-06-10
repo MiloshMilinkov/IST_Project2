@@ -8,6 +8,7 @@
         public string paymentDeadline { get; set; }
         public double paymentAmount { get; set; }
         public string invoiceType { get; set; }
+        public Invoice() { }
         public Invoice(string name,double pricePerUnit,string unitOfMeasurement, double amount)
         {
             this.name = name;
