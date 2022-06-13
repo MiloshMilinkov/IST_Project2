@@ -7,26 +7,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="./CSS/index.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="./JS/index.js" defer></script>
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js">
-    </script>
+    <script src="./JS/repo.js" defer></script>
 </head>
 
 <body>
     <div class="btnContainer">
-        <div class="btnLeft"><button class="buttons" id="showEnt">SHOW ENTERPRISES</button>
-            <button class="buttons" id="">SHOW INVOICES</button></div>
-        <div class="btnRight"><button class="buttons" id="">Edit ENTERPRISES </button>
-            <button class="buttons" id="">EDIT INVOICES</button></div>
+        <div class="btnLeft">
+            <button class="buttons" id="showEnt">Enterprises</button>
+
+        </div>
+        <div class="btnRight">
+            <button class="buttons" id="addEnt">Invoices</button>
+        </div>
 
 
+    </div>
+    <div class="ControlDataContainer">
+        <div>
+
+            <div class="filterDiv">
+                Enterprise pib:<input type="text" name="pib" id="pib">Enterprise name:<input type="text" name="pib" id="pib">
+                <button id="btnFilter">FILTER</button>
+            </div>
+        </div>
+
+
+        <form id="postForm" action="http://localhost:5102/api/Enterprise/AddEnterprise" method="post">
+            PR name:<input type="text" name="nameOfPR" id="nameOfPR"> Contact number:<input type="text" name="phoneNumber" id="phoneNumber"> Email:
+            <input type="text" name="email" id="email"> Enterprise name:<input type="text" name="corpName" id="corpName"> Enterprise address:<input type="text" name="corpAddress" id="corpAddress">
+            <button id="btnPost1">POST</button>
+        </form>
     </div>
     <div class="showDataContainer">
         <div id="showeEntContainer">
-            <select name="" id="select" size=""></select>
+            <select name="" id="select" size=""></select> Enterprise pib:
         </div>
-        <div id="showeInvContainer"></div>
     </div>
+
+
+
+
+
+
+
 
 </body>
 

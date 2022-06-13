@@ -26,14 +26,14 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("AddEnterprise")]
-        public IActionResult AddNewEnterprise([FromForm] string nameOfPR, [FromForm] string phoneNubmer,
+        public IActionResult AddNewEnterprise([FromForm] string nameOfPR, [FromForm] string phoneNumber,
                                          [FromForm] string email, [FromForm] string corpName,
                                          [FromForm] string corpAddress)
         {
             Enterprise enterprise = new Enterprise();
                 enterprise.pib = enterprises.OrderByDescending(enterprise => enterprise.pib).First().pib + 1;
                 enterprise.nameOfPR = nameOfPR;
-                enterprise.phoneNumber = phoneNubmer;
+                enterprise.phoneNumber = phoneNumber;
                 enterprise.email = email;
                 enterprise.corpName = corpName;
                 enterprise.corpAddress = corpAddress;
@@ -42,13 +42,11 @@ namespace WebAPI.Controllers
             
         }
 
-        [HttpGet("filterEnterprises")]
-        public IActionResult FilterByEnteprisename(string filterData)
+        [HttpGet("filterEnterprisesByPIB")]
+        public IActionResult FilterByEnteprisPIB(string filterData)
         {
-            var data = enterprises.Where(enterprise => enterprise.corpName.Contains(filterData) || 
-                                         enterprise.pib.ToString().Contains(filterData.ToString()))
-                .OrderBy(enterprise => enterprise.corpName)
-                .ThenBy(enterprise => enterprise.pib)
+            var data = enterprises.Where(enterprise =>  enterprise.pib.ToString().Contains(filterData.ToString()))
+                .OrderBy(enterprise => enterprise.pib)
                 .Select(enterprise => enterprise);
             return Ok(data);
         }
