@@ -30,7 +30,7 @@ namespace WebAPI.Controllers
                                          [FromForm] string email, [FromForm] string corpName,
                                          [FromForm] string corpAddress)
         {
-            Enterprise enterprise = new Enterprise();
+                Enterprise enterprise = new Enterprise();
                 enterprise.pib = enterprises.OrderByDescending(enterprise => enterprise.pib).First().pib + 1;
                 enterprise.nameOfPR = nameOfPR;
                 enterprise.phoneNumber = phoneNumber;
@@ -51,15 +51,46 @@ namespace WebAPI.Controllers
             return Ok(data);
         }
 
+        [HttpGet("filterEnterprisesByName/{Name}")]
+        public IActionResult FilterPreduzece( string Name)
+        {
+            var data = enterprises.Where(enterprise =>  enterprise.corpName.Contains(Name));
+            if (data == null)
+            {
+                return NotFound("Page not found");
+            }
+            return Ok(data);
+        }
+
+        [HttpPost("EditEnterprise/{prop}")]
+        public IActionResult EditEnterprise([FromForm] string nameOfPR, [FromForm] string phoneNumber,
+                                             [FromForm] string email, [FromForm] string corpName,
+                                             [FromForm] string corpAddress, int prop)                                     
+        {
+            var enterprise = enterprises.FirstOrDefault(enterprise => enterprise.pib == prop);
+            if (enterprise != null)
+            {
+                enterprise.pib = enterprise.pib;
+                enterprise.nameOfPR = nameOfPR;
+                enterprise.phoneNumber = phoneNumber;
+                enterprise.email = email;
+                enterprise.corpName = corpName;
+                enterprise.corpAddress = corpAddress;
+                return Ok(enterprise);
+            }
+            return NotFound("Enterprise not found!");
+        }
+
         [HttpPost("AddNewInvoice")]
-        public IActionResult AddNewInvocie([FromForm] int pibRecieved, [FromForm] int pibDestination,
-                                        [FromForm] string dateOfCreation, [FromForm] string paymentDeadline,
+        public IActionResult AddNewInvoice([FromForm] int pibRecieved, [FromForm] int pibDestination,
+                                        [FromForm] DateTime dateOfCreation, [FromForm] string paymentDeadline,
                                         [FromForm] string invoiceType, [FromForm] double paymentAmount)
         {
+            
             Invoice invoice = new Invoice();
             invoice.pibRecieved = pibRecieved;
             invoice.pibDestination = pibDestination;
-            invoice.dateOfCreation = dateOfCreation;
+            invoice.dateOfCreation =   dateOfCreation;
             invoice.paymentDeadline = paymentDeadline;
             invoice.invoiceType = invoiceType;
             invoice.paymentAmount = paymentAmount;

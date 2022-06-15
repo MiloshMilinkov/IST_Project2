@@ -28,24 +28,31 @@
         <div>
 
             <div class="filterDiv">
-                Enterprise pib:<input type="text" name="pib" id="pib">Enterprise name:<input type="text" name="pib" id="pib">
+                Enterprise pib:<input type="text" name="pib" id="pib"> Enterprise name:<input type="text" name="pib" id="name">
                 <button id="btnFilter">FILTER</button>
             </div>
         </div>
-
-
-        <form id="postForm" action="http://localhost:5102/api/Enterprise/AddEnterprise" method="post">
+        <form id="postForm" class="editForm" action="http://localhost:5102/api/Enterprise/AddEnterprise" method="post">
             PR name:<input type="text" name="nameOfPR" id="nameOfPR"> Contact number:<input type="text" name="phoneNumber" id="phoneNumber"> Email:
             <input type="text" name="email" id="email"> Enterprise name:<input type="text" name="corpName" id="corpName"> Enterprise address:<input type="text" name="corpAddress" id="corpAddress">
             <button id="btnPost1">POST</button>
-        </form>
-    </div>
-    <div class="showDataContainer">
-        <div id="showeEntContainer">
-            <select name="" id="select" size=""></select> Enterprise pib:
-        </div>
-    </div>
+            <button id="btnPost2">EDIT</button>
 
+        </form>
+
+    </div>
+    <dv class="showDataContainer">
+        <div id="showeEntContainer">
+            <select name="" id="select" size=""></select>
+            <br>
+            <button id="btnEdit">Edit</button>
+        </div>
+        </div>
+
+        <div class="filterDiv">
+            Enterprise date:<input type="date" name="pib" id="pibdate">
+            <button id="btnFilterdate">FILTER</button>
+        </div>
 
 
 

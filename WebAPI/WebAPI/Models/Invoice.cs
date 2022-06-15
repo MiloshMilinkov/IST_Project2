@@ -4,7 +4,7 @@
     {
         public int pibRecieved { get; set; }
         public int pibDestination { get; set; }
-        public string dateOfCreation { get; set; }
+        public DateTime dateOfCreation { get; set; }
         public string paymentDeadline { get; set; }
         public double paymentAmount { get; set; }
         public string invoiceType { get; set; }
