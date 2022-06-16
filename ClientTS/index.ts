@@ -5,6 +5,7 @@ const settings = {
 	"method": "GET"
 };
 
+
 var enterprise:Object;
 interface Enterprise{
     nameOfPR:string
@@ -54,12 +55,32 @@ class RadSaPrikazom{
        
         return prikaz
     }
-    static ShowEnterprises(div:HTMLElement){
+    static ShowAllEnterprises(div:HTMLElement){
         let enterprises=[];
         $.ajax(settings).done(function (response) {
             div.innerHTML =`
-        <div class="accordion accordion-flush" id="accordionFlushExample">${RadSaPrikazom.ShowEnterprisesDetails(response)}</div>`
+            <div class="accordion accordion-flush" id="accordionFlushExample">${RadSaPrikazom.ShowEnterprisesDetails(response)}</div>`
         });
+    }
+    static ShowFilteredByPiB(div:HTMLElement){
+        let enterprises=[];
+        let url = "http://localhost:5102/api/Enterprise/filterEnterprisesByPIB";
+        let pib = document.getElementById("pib") as HTMLInputElement;
+        fetch(url + `?filterData=${pib.value}`).then(resp => resp.json()).then((data) => {
+        
+            div.innerHTML =`
+            <div class="accordion accordion-flush" id="accordionFlushExample">${RadSaPrikazom.ShowEnterprisesDetails(data)}</div>`
+       
+        }).catch(err => console.log(err))
+    }
+    static ShowFilteredByName(div:HTMLElement){
+        let enterprises=[];
+        let url = "http://localhost:5102/api/Enterprise/filterEnterprisesByName";
+        let name = document.getElementById("name") as HTMLInputElement;
+        fetch(url + `/${name.value}`).then(resp => resp.json()).then((data) => {
+            div.innerHTML =`
+            <div class="accordion accordion-flush" id="accordionFlushExample">${RadSaPrikazom.ShowEnterprisesDetails(data)}</div>`
+        }).catch(err => console.log(err))
     }
 }
 class AddEnterpraise{
@@ -122,7 +143,7 @@ const buttonAdd:HTMLButtonElement=document.getElementById("btnAdd") as HTMLButto
 
 
 var divShow=document.querySelector("#showEnterprises") as HTMLDivElement;
-buttonShow.addEventListener('click',(e:Event)=>RadSaPrikazom.ShowEnterprises(divShow));
+buttonShow.addEventListener('click',(e:Event)=>RadSaPrikazom.ShowAllEnterprises(divShow));
 var divAddEdit=document.querySelector("#addEditEnteprise") as HTMLDivElement;
 buttonAdd.addEventListener('click',(e:Event)=>AddEnterpraise.AddEnterprise(divAddEdit))
 
@@ -130,6 +151,24 @@ document.addEventListener('click',function(e){
    const target=e.target as Element
     if(target && target.className=="entBtns"){
         EditEnterprise.EditEnterprise(divAddEdit,target.id)
+    }
+})
+
+let pibInput = document.querySelector("#pib") as HTMLInputElement;
+let nameInput = document.querySelector("#name")  as HTMLInputElement;
+const btnFilter=document.getElementById("btnFilter") as HTMLButtonElement;
+
+btnFilter.addEventListener("click", () => {
+
+    if (pibInput.value != "") {
+
+        RadSaPrikazom.ShowFilteredByPiB(divShow);
+    } else if (nameInput.value != "") {
+
+        RadSaPrikazom.ShowFilteredByName(divShow);
+    // } else {
+    //     FilterEnterprisesbyNameAdnPIB();
+    // }
     }
 })
 

@@ -11,3 +11,16 @@
 .entBtns:hover {
     background-color: rgb(128, 250, 250);
 }
+
+#showDiv,
+#editDiv {
+    display: flex;
+    flex-direction: column;
+}
+
+#celina {
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    justify-content: center;
+}
