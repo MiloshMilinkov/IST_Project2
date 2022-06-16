@@ -1,0 +1,13 @@
+#postForm {
+    display: flex;
+    flex-direction: column;
+    width: 25%;
+}
+
+.entBtns {
+    background-color: rgb(161, 230, 230);
+}
+
+.entBtns:hover {
+    background-color: rgb(128, 250, 250);
+}
