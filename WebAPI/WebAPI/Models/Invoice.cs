@@ -2,20 +2,19 @@
 {
     public class Invoice:InvoiceData
     {
-        public int pibRecieved { get; set; }
-        public int pibDestination { get; set; }
+        public int id { get; set; }
+        public int pibSentFrom { get; set; }
+        public int pibSentTo { get; set; }
         public DateTime dateOfCreation { get; set; }
-        public string paymentDeadline { get; set; }
+        public DateTime paymentDeadline { get; set; }
         public double paymentAmount { get; set; }
         public string invoiceType { get; set; }
-        public Invoice() { }
-        public Invoice(string name,double pricePerUnit,string unitOfMeasurement, double amount)
-        {
-            this.name = name;
-            this.pricePerUnit = pricePerUnit;
-            this.unitOfMeasurement=unitOfMeasurement;
-            this.amount = amount;
-        }
-        
+        public string name { get; set; }
+        public double pricePerUnit { get; set; }
+        public string unitType { get; set; }
+        public int amount { get; set; }
+
+
+
     }
 }

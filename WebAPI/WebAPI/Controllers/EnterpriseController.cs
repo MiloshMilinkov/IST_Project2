@@ -14,10 +14,10 @@ namespace WebAPI.Controllers
     {
         static List<Enterprise> enterprises = new List<Enterprise>()
         {
-              new Enterprise { pib=10000000,nameOfPR="Boban",phoneNumber="076069544",
+              new Enterprise { pib=100000000,nameOfPR="Boban",phoneNumber="076069544",
                                                  email="boban@gmail.com",corpName="Emmi",corpAddress="Centar Grada"}
         };
-        static List<Invoice> invoices = new List<Invoice>();
+        
         
         [HttpGet("GetAllEnterprises")]
         public IActionResult showAllEnterprises()
@@ -81,23 +81,7 @@ namespace WebAPI.Controllers
             return NotFound("Enterprise not found!");
         }
 
-        [HttpPost("AddNewInvoice")]
-        public IActionResult AddNewInvoice([FromForm] int pibRecieved, [FromForm] int pibDestination,
-                                        [FromForm] DateTime dateOfCreation, [FromForm] string paymentDeadline,
-                                        [FromForm] string invoiceType, [FromForm] double paymentAmount)
-        {
-            
-            Invoice invoice = new Invoice();
-            invoice.pibRecieved = pibRecieved;
-            invoice.pibDestination = pibDestination;
-            invoice.dateOfCreation =   dateOfCreation;
-            invoice.paymentDeadline = paymentDeadline;
-            invoice.invoiceType = invoiceType;
-            invoice.paymentAmount = paymentAmount;
-            invoices.Add(invoice);
-            return Ok(invoice);
-
-        }
+        
     }
     
    
