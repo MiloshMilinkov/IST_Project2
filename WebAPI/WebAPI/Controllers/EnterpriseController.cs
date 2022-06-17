@@ -61,6 +61,16 @@ namespace WebAPI.Controllers
             }
             return Ok(data);
         }
+        [HttpGet("filterEnterprisesByNameAndPib/{Name}/{PIB}")]
+        public IActionResult FilterByEnteprisPIBandName(string Name, string PIB)
+        {
+            var data = enterprises.Where(enterprise => enterprise.corpName.Contains(Name) && enterprise.pib.ToString().Contains(PIB.ToString()));
+            if (data == null)
+            {
+                return NotFound("Page not found");
+            }
+            return Ok(data);
+        }
 
         [HttpPost("EditEnterprise/{prop}")]
         public IActionResult EditEnterprise([FromForm] string nameOfPR, [FromForm] string phoneNumber,

@@ -82,6 +82,16 @@ class RadSaPrikazom{
             <div class="accordion accordion-flush" id="accordionFlushExample">${RadSaPrikazom.ShowEnterprisesDetails(data)}</div>`
         }).catch(err => console.log(err))
     }
+    static ShowFilteredByNameAndPib(div:HTMLElement){
+        let enterprises=[];
+        let url = "http://localhost:5102/api/Enterprise/filterEnterprisesByNameAndPib";
+        let name = document.getElementById("name") as HTMLInputElement;
+        let pib = document.getElementById("pib") as HTMLInputElement;
+        fetch(url + `/${name.value}/${pib.value}`).then(resp => resp.json()).then((data) => {
+            div.innerHTML =`
+            <div class="accordion accordion-flush" id="accordionFlushExample">${RadSaPrikazom.ShowEnterprisesDetails(data)}</div>`
+        }).catch(err => console.log(err))
+    }
 }
 class AddEnterpraise{
     static AddEnterprise(div:HTMLElement){
