@@ -1,3 +1,8 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
 #postForm {
     display: flex;
     flex-direction: column;
@@ -6,6 +11,7 @@
 
 .entBtns {
     background-color: rgb(161, 230, 230);
+    text-align: left;
 }
 
 .entBtns:hover {
@@ -18,9 +24,26 @@
     flex-direction: column;
 }
 
-#celina {
+#entContainer {
+    margin-top: 15px;
     display: flex;
     flex-direction: row;
     text-align: center;
     justify-content: center;
+    gap: 15px;
+}
+
+.inputbtn {
+    background-color: aquamarine;
+}
+
+.inputbtn:hover {
+    transform: scale(1.05);
+}
+
+#addEditEnteprise {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
 }

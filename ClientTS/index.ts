@@ -48,7 +48,10 @@ class RadSaPrikazom{
               </button>
             </h2>
             <div id="flush-collapseOne-tim-${a.pib}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne-tim-${a.pib}" data-bs-parent="#accordionFlushExample">
-              <button id="${a.pib}" class="entBtns">${a.corpAddress}-${a.nameOfPR}-${a.pib}</button>
+              <button id="${a.pib}" class="entBtns">Enterprise name: ${a.corpName}<br>
+              Enterpris address: ${a.corpAddress}<br>
+              PR name: ${a.nameOfPR}<br>
+              Enterpriss pib: ${a.pib}</button><br>
             </div>
           </div>`
         })
