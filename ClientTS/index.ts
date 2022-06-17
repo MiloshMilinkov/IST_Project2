@@ -115,7 +115,6 @@ class AddEnterpraise{
         type: "post",
         data: $("#postForm").serialize(),
         success: () => {
-            alert("Added ent!")
         }
     });
     })      
@@ -143,7 +142,7 @@ class EditEnterprise{
             type: "post",
             data: $("#postForm").serialize(),
             success: () => {
-                alert("Added ent!")
+
             }
         });
         })  
@@ -170,7 +169,7 @@ class EditEnterprise{
         type: "post",
         data: $("#postForm").serialize(),
         success: () => {
-            alert("Added ent!")
+           
         }
     });
     })      
@@ -186,19 +185,19 @@ class InvoiceRepo{
             if(data!=null)
             data.forEach(item=>{
                 div.innerHTML +=`
-                <button id="${item.id}" class="btnEditInvoice">
+                <button id="${item.id}" class="${item.invoiceType}">
                 <ul>
-                <li>Id: ${item.id}</li>
-                <li>Pib: ${item.pibSentFrom}</li>
-                <li>Pib primaoca fakture: ${item.pibSentTo}</li>
-                <li>Datum: ${item.dateOfCreation}</li>
-                <li>Datum Uplate: ${item.paymentDeadline}</li>
-                <li>Cena: ${item.paymentAmount}</li>
-                <li>Tip: ${item.invoiceType}</li>
-                <li>Naziv: ${item.name}</li>
-                <li>Cena po jedinici mere: ${item.pricePerUnit}</li>
-                <li>Jedinica mere: ${item.unitType}</li>
-                <li>Kolicina: ${item.amount}</li>
+                <li>ID: ${item.id}</li>
+                <li>pibSentFrom: ${item.pibSentFrom}</li>
+                <li>pibSentTo: ${item.pibSentTo}</li>
+                <li>dateOfCreation: ${item.dateOfCreation}</li>
+                <li>paymentDeadline: ${item.paymentDeadline}</li>
+                <li>paymentAmount: ${item.paymentAmount}</li>
+                <li>invoiceType: ${item.invoiceType}</li>
+                <li>name: ${item.name}</li>
+                <li>pricePerUnit: ${item.pricePerUnit}</li>
+                <li>unitType: ${item.unitType}</li>
+                <li>amount: ${item.amount}</li>
             </ul> </button>
                 `
             })
@@ -206,14 +205,39 @@ class InvoiceRepo{
                 div.innerHTML =`<p>staaa</p>`;
             }
             
-        
-            
-            
         }).catch(err => console.log(err))
     }
+    static EditInvoicesForPIB(div:HTMLElement,id:string){
+        
+        let url ="http://localhost:5102/api/Invoice/filterInvoiceByPIB";
+        fetch(url + `/${id}`).then(resp => resp.json()).then((data) => {
+            data.forEach(element => {
+            divAddEdit.innerHTML=`<form id="postForm" class="editForm">
+            dateOfCreation:<input type="date" name="dateOfCreation" id="dateOfCreation" value="${element.dateOfCreation}"> 
+            paymentDeadline:<input type="date" name="paymentDeadline" id="paymentDeadline" value="${element.paymentDeadline}"> 
+            invoiceType:<input type="text" name="invoiceType" id="invoiceType" value="${element.invoiceType}"> 
+            name:<input type="text" name="name" id="name" value="${element.name}"> 
+            pricePerUnit:<input type="number" name="pricePerUnit" id="pricePerUnit" value="${element.pricePerUnit}">
+            unitType:<input type="text" name="unitType" id="unitType" value="${element.unitType}">
+            amount:<input type="number" name="amount" id="amount" value="${element.amount}">
+            <button id="btnPost1">POST</button>
+            </form>`
+        });
+        $("#postForm").submit((e) => {
+            e.preventDefault();
+            $.ajax({
+            url: `http://localhost:5102/api/Invoice/editInvoice/${id}`,
+            type: "post",
+            data: $("#postForm").serialize(),
+            success: () => {
+               
+            }
+        });
+        })  
+            
+    })
+    }
 }
-
-
 
 
 const buttonShow:HTMLButtonElement=document.getElementById("btnShow") as HTMLButtonElement;
@@ -239,13 +263,16 @@ document.addEventListener('click',function(e){
       
         EditEnterprise.AddInvoice(divAddEdit,target.id);     
     }
-    if(target && target.className=="btnEditInvoice"){
-      
-        EditEnterprise.AddInvoice(divAddEdit,target.id);     
+    if(target && target.className=="outgoing"){
+        InvoiceRepo.EditInvoicesForPIB(divAddEdit,target.id);     
     }
     if(target && target.className=="btnShowInvoice"){
       
         InvoiceRepo.ShowAllInvoicesForPIB(divshowInvoice,target.id);     
+    }
+    if(target && target.className=="reloadbtn"){
+      
+        this.location.reload();   
     }
    
 })

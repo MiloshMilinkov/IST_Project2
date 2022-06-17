@@ -20,7 +20,7 @@ namespace WebAPI.Controllers
         public IActionResult sveFakture(int page)
         {
             List<Invoice> tempinvoices = new List<Invoice>();
-            for (int i = page; i < page+1  && i < invoices.Count; i++)
+            for (int i = page; i < page + 1 && i < invoices.Count; i++)
             {
                 tempinvoices.Add(invoices[i]);
             }
@@ -30,9 +30,9 @@ namespace WebAPI.Controllers
         public IActionResult faktureZaJednuFirmu(int PIB, int page)
         {
             List<Invoice> tempinvoices = new List<Invoice>();
-            for (int i = page; i < page+10  && i < invoices.Count; i++)
+            for (int i = page; i < page + 10 && i < invoices.Count; i++)
             {
-                if (invoices[i].pibSentFrom == PIB && invoices[i].invoiceType=="outgoing")
+                if (invoices[i].pibSentFrom == PIB && invoices[i].invoiceType == "outgoing")
                 {
                     tempinvoices.Add(invoices[i]);
                 }
@@ -43,6 +43,14 @@ namespace WebAPI.Controllers
 
             }
             return Ok(tempinvoices);
+        }
+        [HttpGet("filterInvoiceByPIB/{prop}")]
+        public IActionResult FilterByEnteprisPIB(string prop)
+        {
+            var data = invoices.Where(invoice => invoice.id.ToString()==prop.ToString())
+                .OrderBy(invoice => invoice.id)
+                .Select(invoice => invoice);
+            return Ok(data);
         }
 
         [HttpPost("addNewInvoice")]
@@ -107,7 +115,7 @@ namespace WebAPI.Controllers
 
 
         [HttpPost("editInvoice/{prop}")]
-        public IActionResult izmeniFakturu( [FromForm] string dateOfCreation,
+        public IActionResult EditInvoice( [FromForm] string dateOfCreation,
                                             [FromForm] string paymentDeadline,
                                             [FromForm] string invoiceType, [FromForm] string name,
                                             [FromForm] int pricePerUnit, [FromForm] string unitType,
