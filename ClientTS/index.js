@@ -12,7 +12,7 @@ var RadSaPrikazom = /** @class */ (function () {
         console.log(enterprises);
         var prikaz = "";
         enterprises.forEach(function (a) {
-            prikaz += "<div class=\"accordion-item\">\n            <h2 class=\"accordion-header\" id=\"flush-headingOne-tim-".concat(a.pib, "\">\n              <button class=\"accordion-button collapsed\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#flush-collapseOne-tim-").concat(a.pib, "\" aria-expanded=\"false\" aria-controls=\"flush-collapseOne-tim-").concat(a.pib, "\">\n                ").concat(a.corpName, "\n              </button>\n            </h2>\n            <div id=\"flush-collapseOne-tim-").concat(a.pib, "\" class=\"accordion-collapse collapse\" aria-labelledby=\"flush-headingOne-tim-").concat(a.pib, "\" data-bs-parent=\"#accordionFlushExample\">\n              <button id=\"").concat(a.pib, "\" class=\"entBtns\">Enterprise name: ").concat(a.corpName, "<br>\n              Enterpris address: ").concat(a.corpAddress, "<br>\n              PR name: ").concat(a.nameOfPR, "<br>\n              Enterpriss pib: ").concat(a.pib, "</button><br>\n            </div>\n          </div>");
+            prikaz += "<div class=\"accordion-item\">\n            <h2 class=\"accordion-header\" id=\"flush-headingOne-tim-".concat(a.pib, "\">\n              <button class=\"accordion-button collapsed\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#flush-collapseOne-tim-").concat(a.pib, "\" aria-expanded=\"false\" aria-controls=\"flush-collapseOne-tim-").concat(a.pib, "\">\n                ").concat(a.corpName, "\n              </button>\n            </h2>\n            <div id=\"flush-collapseOne-tim-").concat(a.pib, "\" class=\"accordion-collapse collapse\" aria-labelledby=\"flush-headingOne-tim-").concat(a.pib, "\" data-bs-parent=\"#accordionFlushExample\">\n              <button id=\"").concat(a.pib, "\" class=\"entBtns\">Enterprise name: ").concat(a.corpName, "<br>\n              Enterpris address: ").concat(a.corpAddress, "<br>\n              PR name: ").concat(a.nameOfPR, "<br>\n              Enterpriss pib: ").concat(a.pib, "</button><br>\n              <button id=\"").concat(a.pib, "\" class=\"btnInvoice\">AddInvoice</button>\n            </div>\n            \n          </div>");
         });
         return prikaz;
     };
@@ -91,18 +91,37 @@ var EditEnterprise = /** @class */ (function () {
             });
         });
     };
+    EditEnterprise.AddInvoice = function (div, id) {
+        divAddEdit.innerHTML = "<form id=\"postForm\" class=\"editForm\">\n        pibSentFrom:<input type=\"text\" name=\"pibSentFrom\" id=\"pibSentFrom\" value=\"".concat(id, "\"> \n        pibSentTo:<input type=\"text\" name=\"pibSentTo\" id=\"pibSentTo\"> \n        dateOfCreation:<input type=\"date\" name=\"dateOfCreation\" id=\"dateOfCreation\"> \n        paymentDeadline:<input type=\"date\" name=\"paymentDeadline\" id=\"paymentDeadline\"> \n        invoiceType:<input type=\"text\" name=\"invoiceType\" id=\"invoiceType\">\n        name:<input type=\"text\" name=\"name\" id=\"name\">\n        pricePerUnit:<input type=\"number\" name=\"pricePerUnit\" id=\"pricePerUnit\">\n        unitType:<input type=\"text\" name=\"unitType\" id=\"unitType\">\n        amount:<input type=\"number\" name=\"amount\" id=\"amount\">\n        <button id=\"btnPostInvoice\">POST</button>\n        </form>");
+        $("#postForm").submit(function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: "http://localhost:5102/api/Invoice/addNewInvoice",
+                type: "post",
+                data: $("#postForm").serialize(),
+                success: function () {
+                    alert("Added ent!");
+                }
+            });
+        });
+    };
     return EditEnterprise;
 }());
 var buttonShow = document.getElementById("btnShow");
 var buttonAdd = document.getElementById("btnAdd");
+var buttonAddInvoice = document.getElementById("btnAddInvoice");
 var divShow = document.querySelector("#showEnterprises");
 buttonShow.addEventListener('click', function (e) { return RadSaPrikazom.ShowAllEnterprises(divShow); });
 var divAddEdit = document.querySelector("#addEditEnteprise");
 buttonAdd.addEventListener('click', function (e) { return AddEnterpraise.AddEnterprise(divAddEdit); });
+var divAddEditInvoice = document.querySelector("#addEditInvoice");
 document.addEventListener('click', function (e) {
     var target = e.target;
     if (target && target.className == "entBtns") {
         EditEnterprise.EditEnterprise(divAddEdit, target.id);
+    }
+    if (target && target.className == "btnInvoice") {
+        EditEnterprise.AddInvoice(divAddEdit, target.id);
     }
 });
 var pibInput = document.querySelector("#pib");

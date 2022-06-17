@@ -27,8 +27,8 @@ interface Invoice{
     id:number;
     pibSentFrom:number;
     pibSentTo:number;
-    dateOfCreation:Date;
-    paymentDeadline:Date;
+    dateOfCreation:string;
+    paymentDeadline:string;
     paymentAmount:number;
     invoiceType:string;
     name:string;
@@ -52,10 +52,11 @@ class RadSaPrikazom{
               Enterpris address: ${a.corpAddress}<br>
               PR name: ${a.nameOfPR}<br>
               Enterpriss pib: ${a.pib}</button><br>
+              <button id="${a.pib}" class="btnInvoice">AddInvoice</button>
             </div>
+            
           </div>`
         })
-       
         return prikaz
     }
     static ShowAllEnterprises(div:HTMLElement){
@@ -146,11 +147,39 @@ class EditEnterprise{
             
     })
 }
+    static AddInvoice(div:HTMLElement,id:string){
+        divAddEdit.innerHTML=`<form id="postForm" class="editForm">
+        pibSentFrom:<input type="text" name="pibSentFrom" id="pibSentFrom" value="${id}"> 
+        pibSentTo:<input type="text" name="pibSentTo" id="pibSentTo"> 
+        dateOfCreation:<input type="date" name="dateOfCreation" id="dateOfCreation"> 
+        paymentDeadline:<input type="date" name="paymentDeadline" id="paymentDeadline"> 
+        invoiceType:<input type="text" name="invoiceType" id="invoiceType">
+        name:<input type="text" name="name" id="name">
+        pricePerUnit:<input type="number" name="pricePerUnit" id="pricePerUnit">
+        unitType:<input type="text" name="unitType" id="unitType">
+        amount:<input type="number" name="amount" id="amount">
+        <button id="btnPostInvoice">POST</button>
+        </form>`
+        $("#postForm").submit((e) => {
+        e.preventDefault();
+        $.ajax({
+        url: "http://localhost:5102/api/Invoice/addNewInvoice",
+        type: "post",
+        data: $("#postForm").serialize(),
+        success: () => {
+            alert("Added ent!")
+        }
+    });
+    })      
+    }
 }
+
+
 
 
 const buttonShow:HTMLButtonElement=document.getElementById("btnShow") as HTMLButtonElement;
 const buttonAdd:HTMLButtonElement=document.getElementById("btnAdd") as HTMLButtonElement;
+const buttonAddInvoice:HTMLButtonElement=document.getElementById("btnAddInvoice") as HTMLButtonElement;
 
 
 
@@ -159,12 +188,18 @@ var divShow=document.querySelector("#showEnterprises") as HTMLDivElement;
 buttonShow.addEventListener('click',(e:Event)=>RadSaPrikazom.ShowAllEnterprises(divShow));
 var divAddEdit=document.querySelector("#addEditEnteprise") as HTMLDivElement;
 buttonAdd.addEventListener('click',(e:Event)=>AddEnterpraise.AddEnterprise(divAddEdit))
+var divAddEditInvoice=document.querySelector("#addEditInvoice") as HTMLDivElement;
 
 document.addEventListener('click',function(e){
-   const target=e.target as Element
+   const target=e.target as Element;
     if(target && target.className=="entBtns"){
-        EditEnterprise.EditEnterprise(divAddEdit,target.id)
+        EditEnterprise.EditEnterprise(divAddEdit,target.id);     
     }
+    if(target && target.className=="btnInvoice"){
+      
+        EditEnterprise.AddInvoice(divAddEdit,target.id);     
+    }
+   
 })
 
 let pibInput = document.querySelector("#pib") as HTMLInputElement;

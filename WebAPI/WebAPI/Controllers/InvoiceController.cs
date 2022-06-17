@@ -16,9 +16,38 @@ namespace WebAPI.Controllers
         new Invoice{ },
 
         };
+        [HttpGet("showAllInvoices/{page}")]
+        public IActionResult sveFakture(int page)
+        {
+            List<Invoice> tempinvoices = new List<Invoice>();
+            for (int i = page; i < page+1  && i < invoices.Count; i++)
+            {
+                tempinvoices.Add(invoices[i]);
+            }
+            return Ok(tempinvoices);
+        }
+        [HttpGet("{PIB}/{page}")]
+        public IActionResult faktureZaJednuFirmu(int PIB, int page)
+        {
+            List<Invoice> tempinvoices = new List<Invoice>();
+            for (int i = page; i < page+1  && i < invoices.Count; i++)
+            {
+                if (invoices[i].pibSentFrom == PIB && invoices[i].invoiceType=="outgoing")
+                {
+                    tempinvoices.Add(invoices[i]);
+                }
+                if (invoices[i].pibSentTo == PIB && invoices[i].invoiceType == "ingoing")
+                {
+                    tempinvoices.Add(invoices[i]);
+                }
+
+            }
+            return Ok(tempinvoices);
+        }
+
         [HttpPost("addNewInvoice")]
-        public IActionResult AddNewInvoice([FromForm] int pibSentFrom, [FromForm] int pibSentTo, [FromForm] DateTime dateOfCreation,
-                                            [FromForm] DateTime paymentDeadline, [FromForm] double paymentAmount, 
+        public IActionResult AddNewInvoice([FromForm] int pibSentFrom, [FromForm] int pibSentTo, [FromForm] string dateOfCreation,
+                                            [FromForm] string paymentDeadline,
                                             [FromForm] string invoiceType, [FromForm] string name,
                                             [FromForm] int pricePerUnit, [FromForm] string unitType, 
                                             [FromForm] int amount)
@@ -49,7 +78,7 @@ namespace WebAPI.Controllers
             invoice.pibSentTo = pibSentTo;
             invoice.dateOfCreation = dateOfCreation;
             invoice.paymentDeadline = paymentDeadline;
-            invoice.paymentAmount = paymentAmount;
+            invoice.paymentAmount = pricePerUnit*amount;
             invoice.invoiceType = invoiceType;
             invoice.name = name;
             invoice.pricePerUnit = pricePerUnit;
@@ -62,7 +91,7 @@ namespace WebAPI.Controllers
             invoice2.pibSentTo = pibSentTo;
             invoice2.dateOfCreation = dateOfCreation;
             invoice2.paymentDeadline = paymentDeadline;
-            invoice2.paymentAmount = paymentAmount;
+            invoice2.paymentAmount = pricePerUnit * amount;
             invoice2.invoiceType = invoiceTypeTo;
             invoice2.name = name;
             invoice2.pricePerUnit = pricePerUnit;
@@ -75,103 +104,7 @@ namespace WebAPI.Controllers
         }
 
 
-        //[HttpPost("izmeniFakturu")]
-        //public IActionResult izmeniFakturu([FromForm] int PIB, [FromForm] int PIB2, [FromForm] string datumGenerisanja, [FromForm] string datumPlacanja, [FromForm] double ukupnaCena, [FromForm] string tipFakture, [FromForm] string naziv, [FromForm] int cenaPoJediniciMere, [FromForm] string jedinicaMere, [FromForm] int kolicina, [FromForm] int id)
-        //{
-        //    if (proveraPib(PIB))
-        //    {
-        //        return Ok("PIB je u netacnom formatu!!!");
-        //    }
-        //    if (proveraPib(PIB2))
-        //    {
-        //        return Ok("PIB2 je u netacnom formatu!!!");
-        //    }
-        //    int pozicija = -1;
-        //    for (int i = 0; i < fakture.Count; i++)
-        //    {
-        //        Faktura temp = fakture[i];
-        //        if (temp.id == id)
-        //        {
-        //            pozicija = i;
-        //            break;
-        //        }
-        //    }
-        //    if (pozicija == -1)
-        //    {
-        //        return Ok("Nismo pronasli fakturu koju trazite");
-        //    }
-        //    Faktura fak = new Faktura();
-        //    fak.id = id;
-        //    fak.PIB = PIB;
-        //    fak.PIB2 = PIB2;
-        //    fak.datumGenerisanja = datumGenerisanja;
-        //    fak.datumPlacanja = datumPlacanja;
-        //    fak.ukupnaCena = ukupnaCena;
-        //    fak.tipFakture = tipFakture;
-        //    fak.naziv = naziv;
-        //    fak.cenaPoJediniciMere = cenaPoJediniciMere;
-        //    fak.jedinicaMere = jedinicaMere;
-        //    fak.kolicina = kolicina;
-        //    fakture[pozicija] = fak;
-        //    return Ok(fak);
-        //}
         
-
-        //[HttpGet("bilans/{PIB}/{Od}/{Do}")]
-        //public IActionResult bilans(double PIB, string Od, string Do)
-        //{
-        //    double ukupno = 0;
-        //    DateTime Odd = Convert.ToDateTime(Od.Replace("%2F", "/"));
-        //    DateTime Dod = Convert.ToDateTime(Do.Replace("%2F", "/"));
-        //    List<Faktura> temp = new List<Faktura>();
-        //    foreach (Faktura item in fakture)
-        //    {
-        //        DateTime ispitian = Convert.ToDateTime(item.datumGenerisanja);
-        //        if (ispitian > Odd && ispitian < Dod)
-        //        {
-        //            temp.Add(item);
-        //        }
-        //    }
-        //    foreach (Faktura item in temp)
-        //    {
-        //        if (item.PIB == PIB)
-        //        {
-        //            if (item.tipFakture == "ulazna")
-        //            {
-        //                ukupno += item.ukupnaCena;
-        //            }
-        //            else
-        //            {
-        //                ukupno -= item.ukupnaCena;
-        //            }
-        //        }
-        //    }
-        //    return Ok(ukupno);
-        //}
-        //[HttpGet("sveFakture/{strana}")]
-        //public IActionResult sveFakture(int strana)
-        //{
-        //    List<Faktura> fakturaList = new List<Faktura>();
-        //    for (int i = strana; i < strana + 10 && i < fakture.Count; i++)
-        //    {
-        //        fakturaList.Add(fakture[i]);
-        //    }
-        //    return Ok(fakturaList);
-        //}
-        //[HttpGet("{PIB}/{strana}")]
-        //public IActionResult faktureZaJednuFirmu(double PIB, int strana)
-        //{
-        //    List<Faktura> fakturaList = new List<Faktura>();
-        //    for (int i = strana; i < strana + 10 && i < fakture.Count; i++)
-        //    {
-        //        if (fakture[i].PIB == PIB || fakture[i].PIB2 == PIB)
-        //        {
-        //            fakturaList.Add(fakture[i]);
-        //        }
-
-        //    }
-        //    return Ok(fakturaList);
-        //}
 
 
         private bool validatePIB(double PIB)
