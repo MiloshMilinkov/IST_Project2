@@ -52,7 +52,9 @@ class RadSaPrikazom{
               Enterpris address: ${a.corpAddress}<br>
               PR name: ${a.nameOfPR}<br>
               Enterpriss pib: ${a.pib}</button><br>
-              <button id="${a.pib}" class="btnInvoice">AddInvoice</button>
+              <button id="${a.pib}" class="btnInvoice">Add Invoices</button>
+              <button id="${a.pib}" class="btnShowInvoice">Show Invoices</button>
+              
             </div>
             
           </div>`
@@ -66,6 +68,7 @@ class RadSaPrikazom{
             <div class="accordion accordion-flush" id="accordionFlushExample">${RadSaPrikazom.ShowEnterprisesDetails(response)}</div>`
         });
     }
+    
     static ShowFilteredByPiB(div:HTMLElement){
         let enterprises=[];
         let url = "http://localhost:5102/api/Enterprise/filterEnterprisesByPIB";
@@ -173,6 +176,42 @@ class EditEnterprise{
     })      
     }
 }
+class InvoiceRepo{
+    static ShowAllInvoicesForPIB(div:HTMLElement,id:string){
+        let enterprises=[];
+        let url = "http://localhost:5102/api/Invoice";
+        fetch(url + `/${id}/${1}`).then(resp => resp.json()).then((data) => {
+            
+                
+            if(data!=null)
+            data.forEach(item=>{
+                div.innerHTML +=`
+                <button id="${item.id}" class="btnEditInvoice">
+                <ul>
+                <li>Id: ${item.id}</li>
+                <li>Pib: ${item.pibSentFrom}</li>
+                <li>Pib primaoca fakture: ${item.pibSentTo}</li>
+                <li>Datum: ${item.dateOfCreation}</li>
+                <li>Datum Uplate: ${item.paymentDeadline}</li>
+                <li>Cena: ${item.paymentAmount}</li>
+                <li>Tip: ${item.invoiceType}</li>
+                <li>Naziv: ${item.name}</li>
+                <li>Cena po jedinici mere: ${item.pricePerUnit}</li>
+                <li>Jedinica mere: ${item.unitType}</li>
+                <li>Kolicina: ${item.amount}</li>
+            </ul> </button>
+                `
+            })
+            else{
+                div.innerHTML =`<p>staaa</p>`;
+            }
+            
+        
+            
+            
+        }).catch(err => console.log(err))
+    }
+}
 
 
 
@@ -189,6 +228,7 @@ buttonShow.addEventListener('click',(e:Event)=>RadSaPrikazom.ShowAllEnterprises(
 var divAddEdit=document.querySelector("#addEditEnteprise") as HTMLDivElement;
 buttonAdd.addEventListener('click',(e:Event)=>AddEnterpraise.AddEnterprise(divAddEdit))
 var divAddEditInvoice=document.querySelector("#addEditInvoice") as HTMLDivElement;
+var divshowInvoice=document.querySelector("#showInvoices") as HTMLDivElement;
 
 document.addEventListener('click',function(e){
    const target=e.target as Element;
@@ -198,6 +238,14 @@ document.addEventListener('click',function(e){
     if(target && target.className=="btnInvoice"){
       
         EditEnterprise.AddInvoice(divAddEdit,target.id);     
+    }
+    if(target && target.className=="btnEditInvoice"){
+      
+        EditEnterprise.AddInvoice(divAddEdit,target.id);     
+    }
+    if(target && target.className=="btnShowInvoice"){
+      
+        InvoiceRepo.ShowAllInvoicesForPIB(divshowInvoice,target.id);     
     }
    
 })

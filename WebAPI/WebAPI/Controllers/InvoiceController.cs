@@ -30,7 +30,7 @@ namespace WebAPI.Controllers
         public IActionResult faktureZaJednuFirmu(int PIB, int page)
         {
             List<Invoice> tempinvoices = new List<Invoice>();
-            for (int i = page; i < page+1  && i < invoices.Count; i++)
+            for (int i = page; i < page+10  && i < invoices.Count; i++)
             {
                 if (invoices[i].pibSentFrom == PIB && invoices[i].invoiceType=="outgoing")
                 {
