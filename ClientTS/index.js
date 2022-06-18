@@ -110,19 +110,55 @@ var EditEnterprise = /** @class */ (function () {
 var InvoiceRepo = /** @class */ (function () {
     function InvoiceRepo() {
     }
-    InvoiceRepo.ShowAllInvoicesForPIB = function (div, id) {
-        var enterprises = [];
-        var url = "http://localhost:5102/api/Invoice";
-        fetch(url + "/".concat(id, "/").concat(1)).then(function (resp) { return resp.json(); }).then(function (data) {
-            div.innerHTML = "";
-            if (data != null)
-                data.forEach(function (item) {
-                    div.innerHTML += "\n                <button id=\"".concat(item.id, "\" class=\"").concat(item.invoiceType, "\">\n                <ul>\n                <li>ID: ").concat(item.id, "</li>\n                <li>pibSentFrom: ").concat(item.pibSentFrom, "</li>\n                <li>pibSentTo: ").concat(item.pibSentTo, "</li>\n                <li>dateOfCreation: ").concat(item.dateOfCreation, "</li>\n                <li>paymentDeadline: ").concat(item.paymentDeadline, "</li>\n                <li>paymentAmount: ").concat(item.paymentAmount, "</li>\n                <li>invoiceType: ").concat(item.invoiceType, "</li>\n                <li>name: ").concat(item.name, "</li>\n                <li>pricePerUnit: ").concat(item.pricePerUnit, "</li>\n                <li>unitType: ").concat(item.unitType, "</li>\n                <li>amount: ").concat(item.amount, "</li>\n            </ul> </button>\n                ");
-                });
-            else {
-                div.innerHTML = "<p>staaa</p>";
-            }
-        })["catch"](function (err) { return console.log(err); });
+    // static ShowAllInvoicesForPIB(div:HTMLElement,id:string){
+    //     let enterprises=[];
+    //     let url = "http://localhost:5102/api/Invoice";
+    //     fetch(url + `/${id}/${1}`).then(resp => resp.json()).then((data) => {
+    //         div.innerHTML ="";
+    //         if(data!=null)
+    //         data.forEach(item=>{
+    //             div.innerHTML +=`
+    //             <button id="${item.id}" class="${item.invoiceType}">
+    //             <ul>
+    //             <li>ID: ${item.id}</li>
+    //             <li>pibSentFrom: ${item.pibSentFrom}</li>
+    //             <li>pibSentTo: ${item.pibSentTo}</li>
+    //             <li>dateOfCreation: ${item.dateOfCreation}</li>
+    //             <li>paymentDeadline: ${item.paymentDeadline}</li>
+    //             <li>paymentAmount: ${item.paymentAmount}</li>
+    //             <li>invoiceType: ${item.invoiceType}</li>
+    //             <li>name: ${item.name}</li>
+    //             <li>pricePerUnit: ${item.pricePerUnit}</li>
+    //             <li>unitType: ${item.unitType}</li>
+    //             <li>amount: ${item.amount}</li>
+    //         </ul> </button>
+    //             `
+    //         })
+    //         else{
+    //             div.innerHTML =`<p>staaa</p>`;
+    //         }
+    //     }).catch(err => console.log(err))
+    // }
+    InvoiceRepo.ShowAllInvoicesForPIB = function (div, id, page) {
+        settings.url = "http://localhost:5102/api/Invoice/".concat(id, "/").concat(page);
+        div.innerHTML = "";
+        $.ajax(settings).done(function (response) {
+            response.forEach(function (item) {
+                div.innerHTML += "\n                <button id=\"".concat(item.id, "\" class=\"").concat(item.invoiceType, "\">\n                <ul>\n                <li>ID: ").concat(item.id, "</li>\n                <li>pibSentFrom: ").concat(item.pibSentFrom, "</li>\n                <li>pibSentTo: ").concat(item.pibSentTo, "</li>\n                <li>dateOfCreation: ").concat(item.dateOfCreation, "</li>\n                <li>paymentDeadline: ").concat(item.paymentDeadline, "</li>\n                <li>paymentAmount: ").concat(item.paymentAmount, "</li>\n                <li>invoiceType: ").concat(item.invoiceType, "</li>\n                <li>name: ").concat(item.name, "</li>\n                <li>pricePerUnit: ").concat(item.pricePerUnit, "</li>\n                <li>unitType: ").concat(item.unitType, "</li>\n                <li>amount: ").concat(item.amount, "</li>\n            </ul> </button>\n                ");
+            });
+            div.innerHTML += "<ul class=\"pagination\">\n            <li class=\"page-item\"><a class=\"page-link\" id=\"previous_page\" data-page=".concat(page - 1, ">Previous</a></li>\n            <li class=\"page-item\"><a class=\"page-link\" id=\"next_page\" data-page=").concat(page + 1, ">Next</a></li>\n          </ul>");
+            document.querySelector("#previous_page").addEventListener("click", function () {
+                var page = parseInt(document.querySelector("#previous_page").getAttribute("data-page"));
+                if (page < 0) {
+                    page = 0;
+                }
+                InvoiceRepo.ShowAllInvoicesForPIB(div, id, page);
+            });
+            document.querySelector("#next_page").addEventListener("click", function () {
+                var page = parseInt(document.querySelector("#next_page").getAttribute("data-page"));
+                InvoiceRepo.ShowAllInvoicesForPIB(div, id, page);
+            });
+        });
     };
     InvoiceRepo.EditInvoicesForPIB = function (div, id) {
         var url = "http://localhost:5102/api/Invoice/filterInvoiceByPIB";
@@ -174,7 +210,7 @@ document.addEventListener('click', function (e) {
         InvoiceRepo.EditInvoicesForPIB(divAddEdit, target.id);
     }
     if (target && target.className == "btnShowInvoice") {
-        InvoiceRepo.ShowAllInvoicesForPIB(divshowInvoice, target.id);
+        InvoiceRepo.ShowAllInvoicesForPIB(divshowInvoice, target.id, 1);
     }
     if (target && target.className == "btnShowIncome") {
         InvoiceRepo.showEnterpriseIncome(divshowInvoice, target.id);

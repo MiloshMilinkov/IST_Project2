@@ -182,15 +182,46 @@ class EditEnterprise{
     }
 }
 class InvoiceRepo{
-    static ShowAllInvoicesForPIB(div:HTMLElement,id:string){
-        let enterprises=[];
-        let url = "http://localhost:5102/api/Invoice";
-        fetch(url + `/${id}/${1}`).then(resp => resp.json()).then((data) => {
+    // static ShowAllInvoicesForPIB(div:HTMLElement,id:string){
+    //     let enterprises=[];
+    //     let url = "http://localhost:5102/api/Invoice";
+    //     fetch(url + `/${id}/${1}`).then(resp => resp.json()).then((data) => {
             
-            div.innerHTML ="";
-            if(data!=null)
-            data.forEach(item=>{
-                div.innerHTML +=`
+    //         div.innerHTML ="";
+    //         if(data!=null)
+    //         data.forEach(item=>{
+    //             div.innerHTML +=`
+    //             <button id="${item.id}" class="${item.invoiceType}">
+    //             <ul>
+    //             <li>ID: ${item.id}</li>
+    //             <li>pibSentFrom: ${item.pibSentFrom}</li>
+    //             <li>pibSentTo: ${item.pibSentTo}</li>
+    //             <li>dateOfCreation: ${item.dateOfCreation}</li>
+    //             <li>paymentDeadline: ${item.paymentDeadline}</li>
+    //             <li>paymentAmount: ${item.paymentAmount}</li>
+    //             <li>invoiceType: ${item.invoiceType}</li>
+    //             <li>name: ${item.name}</li>
+    //             <li>pricePerUnit: ${item.pricePerUnit}</li>
+    //             <li>unitType: ${item.unitType}</li>
+    //             <li>amount: ${item.amount}</li>
+    //         </ul> </button>
+    //             `
+    //         })
+    //         else{
+    //             div.innerHTML =`<p>staaa</p>`;
+    //         }
+            
+    //     }).catch(err => console.log(err))
+    // }
+    static ShowAllInvoicesForPIB(div:HTMLElement,id:string,page:number){
+        
+        settings.url=`http://localhost:5102/api/Invoice/${id}/${page}`
+        div.innerHTML="";
+        $.ajax(settings).done(function (response) {
+           
+            response.forEach(item=>{
+                
+                div.innerHTML+=`
                 <button id="${item.id}" class="${item.invoiceType}">
                 <ul>
                 <li>ID: ${item.id}</li>
@@ -207,12 +238,30 @@ class InvoiceRepo{
             </ul> </button>
                 `
             })
-            else{
-                div.innerHTML =`<p>staaa</p>`;
-            }
+            div.innerHTML+=`<ul class="pagination">
+            <li class="page-item"><a class="page-link" id="previous_page" data-page=${page-1}>Previous</a></li>
+            <li class="page-item"><a class="page-link" id="next_page" data-page=${page+1}>Next</a></li>
+          </ul>`
+          document.querySelector("#previous_page").addEventListener("click",()=>{
+            let page=parseInt(document.querySelector("#previous_page").getAttribute("data-page"));  
             
-        }).catch(err => console.log(err))
+            if(page<0){
+                page=0;
+            }
+            InvoiceRepo.ShowAllInvoicesForPIB(div,id,page);
+          })
+          document.querySelector("#next_page").addEventListener("click",()=>{
+            let page=parseInt(document.querySelector("#next_page").getAttribute("data-page"));
+            InvoiceRepo.ShowAllInvoicesForPIB(div,id,page);
+        })
+        });
     }
+
+
+
+
+
+
     static EditInvoicesForPIB(div:HTMLElement,id:string){
         
         let url ="http://localhost:5102/api/Invoice/filterInvoiceByPIB";
@@ -291,7 +340,7 @@ document.addEventListener('click',function(e){
     }
     if(target && target.className=="btnShowInvoice"){
       
-        InvoiceRepo.ShowAllInvoicesForPIB(divshowInvoice,target.id); 
+        InvoiceRepo.ShowAllInvoicesForPIB(divshowInvoice,target.id,1); 
          
     }
     if(target && target.className=="btnShowIncome"){

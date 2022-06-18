@@ -17,7 +17,7 @@ namespace WebAPI.Controllers
 
         };
         [HttpGet("showAllInvoices/{page}")]
-        public IActionResult sveFakture(int page)
+        public IActionResult showAllInvoices(int page)
         {
             List<Invoice> tempinvoices = new List<Invoice>();
             for (int i = page; i < page + 1 && i < invoices.Count; i++)
@@ -27,20 +27,44 @@ namespace WebAPI.Controllers
             return Ok(tempinvoices);
         }
         [HttpGet("{PIB}/{page}")]
-        public IActionResult faktureZaJednuFirmu(int PIB, int page)
+        public IActionResult invoiceForEnteprise(int PIB, int page)
         {
+            
             List<Invoice> tempinvoices = new List<Invoice>();
-            for (int i = page; i < page + 10 && i < invoices.Count; i++)
+            int elementSparepage = 2;
+            int offset = (page - 1)* elementSparepage;
+            int cutoff = offset + elementSparepage;
+            int br = 0;
+            for (int i = 0; i < invoices.Count; i++)
             {
                 if (invoices[i].pibSentFrom == PIB && invoices[i].invoiceType == "outgoing")
                 {
-                    tempinvoices.Add(invoices[i]);
+                    if (br>=offset)
+                    {
+                        if (br >= cutoff)
+                        {
+                            break;
+                        }
+                        tempinvoices.Add(invoices[i]);
+                       
+                       
+                    }
+                    br++;
                 }
                 if (invoices[i].pibSentTo == PIB && invoices[i].invoiceType == "ingoing")
                 {
-                    tempinvoices.Add(invoices[i]);
+                    if (br >=offset)
+                    {
+                        if (br >= cutoff)
+                        {
+                            break;
+                        }
+                        tempinvoices.Add(invoices[i]);
+                        
+                        
+                    }
+                    br++;
                 }
-
             }
             return Ok(tempinvoices);
         }
