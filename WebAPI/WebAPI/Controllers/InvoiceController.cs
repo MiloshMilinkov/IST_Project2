@@ -68,12 +68,22 @@ namespace WebAPI.Controllers
             }
             return Ok(tempinvoices);
         }
-        [HttpGet("filterInvoiceByPIB/{prop}")]
-        public IActionResult FilterByEnteprisPIB(string prop)
+        [HttpGet("filterInvoiceByPIB/{id}")]
+        public IActionResult filterInvoiceByPIB(string id)
         {
-            var data = invoices.Where(invoice => invoice.id.ToString()==prop.ToString())
-                .OrderBy(invoice => invoice.id)
-                .Select(invoice => invoice);
+            var data = invoices.Where(invoice => invoice.id.ToString() == id.ToString());
+            return Ok(data);
+        }
+        [HttpGet("filterInvoiceByName/{prop}")]
+        public IActionResult FilterByInvoiceName(string prop)
+        {
+            var data = invoices.Where(invoice => invoice.name == prop);
+            return Ok(data);
+        }
+        [HttpGet("filterInvoiceByAmount/{prop}")]
+        public IActionResult FilterByInvoiceAmount(double prop)
+        {
+            var data = invoices.Where(invoice => invoice.paymentAmount.ToString() == prop.ToString());
             return Ok(data);
         }
 

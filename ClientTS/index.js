@@ -19,7 +19,7 @@ var RadSaPrikazom = /** @class */ (function () {
     RadSaPrikazom.ShowAllEnterprises = function (div) {
         var enterprises = [];
         $.ajax(settings).done(function (response) {
-            div.innerHTML = "\n            <div class=\"accordion accordion-flush\" id=\"accordionFlushExample\">".concat(RadSaPrikazom.ShowEnterprisesDetails(response), "</div>");
+            div.innerHTML = "\n            <div class=\"accordion accordion-flush\" id=\"accordionFlushExample\">".concat(RadSaPrikazom.ShowEnterprisesDetails(response), "</div>\n            <li><input type=\"string\" placeholder=\"name\" name=\"pib\" id=\"filter1\">\n            <input type=\"number\" placeholder=\"amount\" name=\"pib\" id=\"filter2\">\n            <button id=\"\" class=\"btnShowInvoiceFilter\">Show Invoice</button></li>");
         });
     };
     RadSaPrikazom.ShowFilteredByPiB = function (div) {
@@ -146,7 +146,7 @@ var InvoiceRepo = /** @class */ (function () {
             response.forEach(function (item) {
                 div.innerHTML += "\n                <button id=\"".concat(item.id, "\" class=\"").concat(item.invoiceType, "\">\n                <ul>\n                <li>ID: ").concat(item.id, "</li>\n                <li>pibSentFrom: ").concat(item.pibSentFrom, "</li>\n                <li>pibSentTo: ").concat(item.pibSentTo, "</li>\n                <li>dateOfCreation: ").concat(item.dateOfCreation, "</li>\n                <li>paymentDeadline: ").concat(item.paymentDeadline, "</li>\n                <li>paymentAmount: ").concat(item.paymentAmount, "</li>\n                <li>invoiceType: ").concat(item.invoiceType, "</li>\n                <li>name: ").concat(item.name, "</li>\n                <li>pricePerUnit: ").concat(item.pricePerUnit, "</li>\n                <li>unitType: ").concat(item.unitType, "</li>\n                <li>amount: ").concat(item.amount, "</li>\n            </ul> </button>\n                ");
             });
-            div.innerHTML += "<ul class=\"pagination\">\n            <li class=\"page-item\"><a class=\"page-link\" id=\"previous_page\" data-page=".concat(page - 1, ">Previous</a></li>\n            <li class=\"page-item\"><a class=\"page-link\" id=\"next_page\" data-page=").concat(page + 1, ">Next</a></li>\n          </ul>");
+            div.innerHTML += "<ul class=\"pagination\">\n            <li class=\"page-item\"><a class=\"page-link\" id=\"previous_page\" data-page=".concat(page - 1, ">Previous</a></li>\n            <li class=\"page-item\"><a class=\"page-link\" id=\"next_page\" data-page=").concat(page + 1, ">Next</a></li>\n           \n          </ul>");
             document.querySelector("#previous_page").addEventListener("click", function () {
                 var page = parseInt(document.querySelector("#previous_page").getAttribute("data-page"));
                 if (page < 0) {
@@ -160,10 +160,33 @@ var InvoiceRepo = /** @class */ (function () {
             });
         });
     };
+    InvoiceRepo.filterInvoiceByName = function (div) {
+        var enterprises = [];
+        var url = "http://localhost:5102/api/Invoice/filterInvoiceByPIB";
+        var pib = document.getElementById("filter1");
+        fetch(url + "/".concat(pib.value)).then(function (resp) { return resp.json(); }).then(function (data) {
+            div.innerHTML = "";
+            data.forEach(function (item) {
+                div.innerHTML += "\n                            <button id=\"".concat(item.id, "\" class=\"").concat(item.invoiceType, "\">\n                            <ul>\n                            <li>ID: ").concat(item.id, "</li>\n                            <li>pibSentFrom: ").concat(item.pibSentFrom, "</li>\n                            <li>pibSentTo: ").concat(item.pibSentTo, "</li>\n                            <li>dateOfCreation: ").concat(item.dateOfCreation, "</li>\n                            <li>paymentDeadline: ").concat(item.paymentDeadline, "</li>\n                            <li>paymentAmount: ").concat(item.paymentAmount, "</li>\n                            <li>invoiceType: ").concat(item.invoiceType, "</li>\n                            <li>name: ").concat(item.name, "</li>\n                            <li>pricePerUnit: ").concat(item.pricePerUnit, "</li>\n                            <li>unitType: ").concat(item.unitType, "</li>\n                            <li>amount: ").concat(item.amount, "</li>\n                        </ul> </button>");
+            })["catch"](function (err) { return console.log(err); });
+        });
+    };
+    InvoiceRepo.filterInvoiceByAmount = function (div) {
+        var enterprises = [];
+        var url = "http://localhost:5102/api/Invoice/filterInvoiceByAmount";
+        var name = document.getElementById("filter2");
+        fetch(url + "/".concat(name.value)).then(function (resp) { return resp.json(); }).then(function (data) {
+            div.innerHTML = "";
+            data.forEach(function (item) {
+                div.innerHTML += "\n                            <button id=\"".concat(item.id, "\" class=\"").concat(item.invoiceType, "\">\n                            <ul>\n                            <li>ID: ").concat(item.id, "</li>\n                            <li>pibSentFrom: ").concat(item.pibSentFrom, "</li>\n                            <li>pibSentTo: ").concat(item.pibSentTo, "</li>\n                            <li>dateOfCreation: ").concat(item.dateOfCreation, "</li>\n                            <li>paymentDeadline: ").concat(item.paymentDeadline, "</li>\n                            <li>paymentAmount: ").concat(item.paymentAmount, "</li>\n                            <li>invoiceType: ").concat(item.invoiceType, "</li>\n                            <li>name: ").concat(item.name, "</li>\n                            <li>pricePerUnit: ").concat(item.pricePerUnit, "</li>\n                            <li>unitType: ").concat(item.unitType, "</li>\n                            <li>amount: ").concat(item.amount, "</li>\n                        </ul> </button>");
+            })["catch"](function (err) { return console.log(err); });
+        });
+    };
     InvoiceRepo.EditInvoicesForPIB = function (div, id) {
         var url = "http://localhost:5102/api/Invoice/filterInvoiceByPIB";
         fetch(url + "/".concat(id)).then(function (resp) { return resp.json(); }).then(function (data) {
             data.forEach(function (element) {
+                alert("1");
                 divAddEdit.innerHTML = "<form id=\"postForm\" class=\"editForm\">\n            dateOfCreation:<input type=\"date\" name=\"dateOfCreation\" id=\"dateOfCreation\" value=\"".concat(element.dateOfCreation, "\"> \n            paymentDeadline:<input type=\"date\" name=\"paymentDeadline\" id=\"paymentDeadline\" value=\"").concat(element.paymentDeadline, "\"> \n            invoiceType:<input type=\"text\" name=\"invoiceType\" id=\"invoiceType\" value=\"").concat(element.invoiceType, "\"> \n            name:<input type=\"text\" name=\"name\" id=\"name\" value=\"").concat(element.name, "\"> \n            pricePerUnit:<input type=\"number\" name=\"pricePerUnit\" id=\"pricePerUnit\" value=\"").concat(element.pricePerUnit, "\">\n            unitType:<input type=\"text\" name=\"unitType\" id=\"unitType\" value=\"").concat(element.unitType, "\">\n            amount:<input type=\"number\" name=\"amount\" id=\"amount\" value=\"").concat(element.amount, "\">\n            <button id=\"btnPost1\">POST</button>\n            </form>");
             });
             $("#postForm").submit(function (e) {
@@ -207,6 +230,7 @@ document.addEventListener('click', function (e) {
         EditEnterprise.AddInvoice(divAddEdit, target.id);
     }
     if (target && target.className == "outgoing") {
+        alert("1");
         InvoiceRepo.EditInvoicesForPIB(divAddEdit, target.id);
     }
     if (target && target.className == "btnShowInvoice") {
@@ -214,6 +238,16 @@ document.addEventListener('click', function (e) {
     }
     if (target && target.className == "btnShowIncome") {
         InvoiceRepo.showEnterpriseIncome(divshowInvoice, target.id);
+    }
+    if (target && target.className == "btnShowInvoiceFilter") {
+        var amount = document.getElementById("filter2");
+        var name_1 = document.getElementById("filter1");
+        if (amount.value != "" && name_1.value == "") {
+            InvoiceRepo.filterInvoiceByAmount(divshowInvoice);
+        }
+        if (name_1.value != "" && amount.value == "") {
+            InvoiceRepo.filterInvoiceByName(divshowInvoice);
+        }
     }
     if (target && target.className == "reloadbtn") {
         pageReload();
@@ -226,13 +260,13 @@ var pibInput = document.querySelector("#pib");
 var nameInput = document.querySelector("#name");
 var btnFilter = document.getElementById("btnFilter");
 btnFilter.addEventListener("click", function () {
-    if (pibInput.value != "") {
+    if (pibInput.value != "" && nameInput.value == "") {
         RadSaPrikazom.ShowFilteredByPiB(divShow);
     }
-    else if (nameInput.value != "") {
+    else if (nameInput.value != "" && pibInput.value == "") {
         RadSaPrikazom.ShowFilteredByName(divShow);
-        // } else {
-        //     FilterEnterprisesbyNameAdnPIB();
-        // }
+    }
+    else if (nameInput.value != "" && pibInput.value != "") {
+        RadSaPrikazom.ShowFilteredByNameAndPib(divShow);
     }
 });

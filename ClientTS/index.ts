@@ -68,7 +68,10 @@ class RadSaPrikazom{
         let enterprises=[];
         $.ajax(settings).done(function (response) {
             div.innerHTML =`
-            <div class="accordion accordion-flush" id="accordionFlushExample">${RadSaPrikazom.ShowEnterprisesDetails(response)}</div>`
+            <div class="accordion accordion-flush" id="accordionFlushExample">${RadSaPrikazom.ShowEnterprisesDetails(response)}</div>
+            <li><input type="string" placeholder="name" name="pib" id="filter1">
+            <input type="number" placeholder="amount" name="pib" id="filter2">
+            <button id="" class="btnShowInvoiceFilter">Show Invoice</button></li>`
         });
     }
     
@@ -241,6 +244,7 @@ class InvoiceRepo{
             div.innerHTML+=`<ul class="pagination">
             <li class="page-item"><a class="page-link" id="previous_page" data-page=${page-1}>Previous</a></li>
             <li class="page-item"><a class="page-link" id="next_page" data-page=${page+1}>Next</a></li>
+           
           </ul>`
           document.querySelector("#previous_page").addEventListener("click",()=>{
             let page=parseInt(document.querySelector("#previous_page").getAttribute("data-page"));  
@@ -255,8 +259,60 @@ class InvoiceRepo{
             InvoiceRepo.ShowAllInvoicesForPIB(div,id,page);
         })
         });
+        
     }
-
+    static filterInvoiceByName(div:HTMLElement){
+        let enterprises=[];
+        let url = "http://localhost:5102/api/Invoice/filterInvoiceByPIB";
+        let pib = document.getElementById("filter1") as HTMLInputElement;
+        fetch(url + `/${pib.value}`).then(resp => resp.json()).then((data) => {
+        
+            div.innerHTML =""
+            data.forEach(item=>{
+                            div.innerHTML +=`
+                            <button id="${item.id}" class="${item.invoiceType}">
+                            <ul>
+                            <li>ID: ${item.id}</li>
+                            <li>pibSentFrom: ${item.pibSentFrom}</li>
+                            <li>pibSentTo: ${item.pibSentTo}</li>
+                            <li>dateOfCreation: ${item.dateOfCreation}</li>
+                            <li>paymentDeadline: ${item.paymentDeadline}</li>
+                            <li>paymentAmount: ${item.paymentAmount}</li>
+                            <li>invoiceType: ${item.invoiceType}</li>
+                            <li>name: ${item.name}</li>
+                            <li>pricePerUnit: ${item.pricePerUnit}</li>
+                            <li>unitType: ${item.unitType}</li>
+                            <li>amount: ${item.amount}</li>
+                        </ul> </button>`
+       
+        }).catch(err => console.log(err))
+    })}
+    static filterInvoiceByAmount(div:HTMLElement){
+        let enterprises=[];
+        let url = "http://localhost:5102/api/Invoice/filterInvoiceByAmount";
+        let name = document.getElementById("filter2") as HTMLInputElement;
+        fetch(url + `/${name.value}`).then(resp => resp.json()).then((data) => {
+            div.innerHTML =""
+            data.forEach(item=>{
+                            div.innerHTML +=`
+                            <button id="${item.id}" class="${item.invoiceType}">
+                            <ul>
+                            <li>ID: ${item.id}</li>
+                            <li>pibSentFrom: ${item.pibSentFrom}</li>
+                            <li>pibSentTo: ${item.pibSentTo}</li>
+                            <li>dateOfCreation: ${item.dateOfCreation}</li>
+                            <li>paymentDeadline: ${item.paymentDeadline}</li>
+                            <li>paymentAmount: ${item.paymentAmount}</li>
+                            <li>invoiceType: ${item.invoiceType}</li>
+                            <li>name: ${item.name}</li>
+                            <li>pricePerUnit: ${item.pricePerUnit}</li>
+                            <li>unitType: ${item.unitType}</li>
+                            <li>amount: ${item.amount}</li>
+                        </ul> </button>`
+        
+        }).catch(err => console.log(err))
+    })
+}
 
 
 
@@ -267,7 +323,8 @@ class InvoiceRepo{
         let url ="http://localhost:5102/api/Invoice/filterInvoiceByPIB";
         fetch(url + `/${id}`).then(resp => resp.json()).then((data) => {
             data.forEach(element => {
-            divAddEdit.innerHTML=`<form id="postForm" class="editForm">
+                alert("1")
+                divAddEdit.innerHTML=`<form id="postForm" class="editForm">
             dateOfCreation:<input type="date" name="dateOfCreation" id="dateOfCreation" value="${element.dateOfCreation}"> 
             paymentDeadline:<input type="date" name="paymentDeadline" id="paymentDeadline" value="${element.paymentDeadline}"> 
             invoiceType:<input type="text" name="invoiceType" id="invoiceType" value="${element.invoiceType}"> 
@@ -334,6 +391,7 @@ document.addEventListener('click',function(e){
            
     }
     if(target && target.className=="outgoing"){
+        alert("1");
         InvoiceRepo.EditInvoicesForPIB(divAddEdit,target.id);  
        
          
@@ -344,7 +402,20 @@ document.addEventListener('click',function(e){
          
     }
     if(target && target.className=="btnShowIncome"){
+        
         InvoiceRepo.showEnterpriseIncome(divshowInvoice,target.id); 
+         
+    }
+    if(target && target.className=="btnShowInvoiceFilter"){
+        let amount = document.getElementById("filter2") as HTMLInputElement;
+        let name = document.getElementById("filter1") as HTMLInputElement;
+        if(amount.value != "" && name.value == ""){
+            InvoiceRepo.filterInvoiceByAmount(divshowInvoice); 
+        }
+        if(name.value != "" && amount.value == ""){
+            InvoiceRepo.filterInvoiceByName(divshowInvoice); 
+        }
+        
          
     }
     
@@ -363,16 +434,17 @@ const btnFilter=document.getElementById("btnFilter") as HTMLButtonElement;
 
 btnFilter.addEventListener("click", () => {
 
-    if (pibInput.value != "") {
+    if (pibInput.value != "" && nameInput.value == "") {
 
         RadSaPrikazom.ShowFilteredByPiB(divShow);
-    } else if (nameInput.value != "") {
+    } else if (nameInput.value != "" && pibInput.value == "") {
 
         RadSaPrikazom.ShowFilteredByName(divShow);
-    // } else {
-    //     FilterEnterprisesbyNameAdnPIB();
-    // }
+    } 
+    else if(nameInput.value != "" &&  pibInput.value != "") {
+        RadSaPrikazom.ShowFilteredByNameAndPib(divShow);
     }
+    
 })
 
 
