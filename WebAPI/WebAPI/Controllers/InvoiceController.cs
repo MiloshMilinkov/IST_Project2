@@ -163,6 +163,39 @@ namespace WebAPI.Controllers
             }
             return NotFound("Invoice not found!");
         }
+        [HttpGet("EnterpriseIncome")]
+        public IActionResult EnterpriseIncome(int PIB, string dateFrom,string dateTo)
+        {
+            double sum = 0;
+            DateTime Odd = Convert.ToDateTime(dateFrom.Replace("%2F", "/"));
+            DateTime Dod = Convert.ToDateTime(dateTo.Replace("%2F", "/"));
+            List<Invoice> tempInvoice = new List<Invoice>();
+            foreach (Invoice item in invoices)
+            {
+                DateTime ispitian = Convert.ToDateTime(item.dateOfCreation);
+                if (ispitian > Odd && ispitian < Dod)
+                {
+                    tempInvoice.Add(item);
+                }
+            }
+            foreach (Invoice item in tempInvoice)
+            {
+                if (item.pibSentFrom == PIB)
+                {
+                    if (item.invoiceType == "outgoing")
+                    {
+                        sum += item.paymentAmount;
+                    }
+                   
+                }
+                else if (item.pibSentTo == PIB)
+                {
+                    if (item.invoiceType == "ingoing")
+                        sum -= item.paymentAmount;
+                }
+            }
+            return Ok(sum);
+        }
         private bool validatePIB(double PIB)
         {
             if (PIB > 99999999 && PIB < 1000000000)

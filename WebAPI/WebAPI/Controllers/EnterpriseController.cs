@@ -15,7 +15,9 @@ namespace WebAPI.Controllers
         static List<Enterprise> enterprises = new List<Enterprise>()
         {
               new Enterprise { pib=100000000,nameOfPR="Boban",phoneNumber="076069544",
-                                                 email="boban@gmail.com",corpName="Emmi",corpAddress="Centar Grada"}
+                                                 email="boban@gmail.com",corpName="Emmi",corpAddress="Centar Grada"},
+              new Enterprise { pib=100000001,nameOfPR="Pera",phoneNumber="asdasdasda",
+                                                 email="pera@gmail.com",corpName="Metalfarm",corpAddress="Dobanovci"}
         };
         
         

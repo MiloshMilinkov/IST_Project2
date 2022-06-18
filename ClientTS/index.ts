@@ -54,6 +54,9 @@ class RadSaPrikazom{
               Enterpriss pib: ${a.pib}</button><br>
               <button id="${a.pib}" class="btnInvoice">Add Invoices</button>
               <button id="${a.pib}" class="btnShowInvoice">Show Invoices</button>
+              <input type="date" placeholder="PIB" name="pib" id="date1">
+              <input type="date" placeholder="NAME" name="pib" id="date2">
+              <button id="${a.pib}" class="btnShowIncome">Show Income</button>
               
             </div>
             
@@ -115,9 +118,11 @@ class AddEnterpraise{
         type: "post",
         data: $("#postForm").serialize(),
         success: () => {
+            pageReload();
         }
     });
-    })      
+    }) 
+         
     }
 }
 class EditEnterprise{
@@ -142,11 +147,11 @@ class EditEnterprise{
             type: "post",
             data: $("#postForm").serialize(),
             success: () => {
-
+                pageReload(); 
             }
         });
         })  
-            
+          
     })
 }
     static AddInvoice(div:HTMLElement,id:string){
@@ -169,10 +174,11 @@ class EditEnterprise{
         type: "post",
         data: $("#postForm").serialize(),
         success: () => {
-           
+            pageReload();
         }
     });
     })      
+    
     }
 }
 class InvoiceRepo{
@@ -181,7 +187,7 @@ class InvoiceRepo{
         let url = "http://localhost:5102/api/Invoice";
         fetch(url + `/${id}/${1}`).then(resp => resp.json()).then((data) => {
             
-                
+            div.innerHTML ="";
             if(data!=null)
             data.forEach(item=>{
                 div.innerHTML +=`
@@ -230,12 +236,26 @@ class InvoiceRepo{
             type: "post",
             data: $("#postForm").serialize(),
             success: () => {
-               
+                pageReload();
             }
         });
         })  
             
     })
+   
+    }
+    static showEnterpriseIncome(div:HTMLElement,id:string){
+        var date1=document.querySelector("#date1") as HTMLInputElement;
+        var date2=document.querySelector("#date2") as HTMLInputElement;
+    
+        let url ="http://localhost:5102/api/Invoice/EnterpriseIncome";
+        fetch(url + `?PIB=${id}&dateFrom=${date1.value}&dateTo=${date2.value}`).then(resp => resp.json()).then((data) => {
+            
+                divAddEdit.innerHTML=`Income for PIB(${id})=${data} eur`
+        
+            
+    })
+   
     }
 }
 
@@ -243,7 +263,6 @@ class InvoiceRepo{
 const buttonShow:HTMLButtonElement=document.getElementById("btnShow") as HTMLButtonElement;
 const buttonAdd:HTMLButtonElement=document.getElementById("btnAdd") as HTMLButtonElement;
 const buttonAddInvoice:HTMLButtonElement=document.getElementById("btnAddInvoice") as HTMLButtonElement;
-
 
 
 
@@ -257,26 +276,38 @@ var divshowInvoice=document.querySelector("#showInvoices") as HTMLDivElement;
 document.addEventListener('click',function(e){
    const target=e.target as Element;
     if(target && target.className=="entBtns"){
-        EditEnterprise.EditEnterprise(divAddEdit,target.id);     
+        EditEnterprise.EditEnterprise(divAddEdit,target.id);
+            
     }
     if(target && target.className=="btnInvoice"){
       
-        EditEnterprise.AddInvoice(divAddEdit,target.id);     
+        EditEnterprise.AddInvoice(divAddEdit,target.id);
+           
     }
     if(target && target.className=="outgoing"){
-        InvoiceRepo.EditInvoicesForPIB(divAddEdit,target.id);     
+        InvoiceRepo.EditInvoicesForPIB(divAddEdit,target.id);  
+       
+         
     }
     if(target && target.className=="btnShowInvoice"){
       
-        InvoiceRepo.ShowAllInvoicesForPIB(divshowInvoice,target.id);     
+        InvoiceRepo.ShowAllInvoicesForPIB(divshowInvoice,target.id); 
+         
     }
+    if(target && target.className=="btnShowIncome"){
+        InvoiceRepo.showEnterpriseIncome(divshowInvoice,target.id); 
+         
+    }
+    
     if(target && target.className=="reloadbtn"){
-      
-        this.location.reload();   
+        pageReload();
+          
     }
    
 })
-
+function pageReload(){
+    this.location.reload(); 
+}
 let pibInput = document.querySelector("#pib") as HTMLInputElement;
 let nameInput = document.querySelector("#name")  as HTMLInputElement;
 const btnFilter=document.getElementById("btnFilter") as HTMLButtonElement;
